@@ -2,19 +2,20 @@ namespace StillWaiting;
 
 public class RepeatingService: BackgroundService
 {
-    private readonly PeriodicTimer _timer = new(TimeSpan.FromMinutes(4));
+    private readonly PeriodicTimer _timer = new(TimeSpan.FromMinutes(1));
+    private readonly IMyDependency _myDependency;
     
-    // create a constructor that takes in the IServiceProvider
-    public RepeatingService()
+    public RepeatingService(IMyDependency myDependency)
     {
+        _myDependency = myDependency;
         Console.WriteLine("RepeatingService constructor");
     }
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         while (await _timer.WaitForNextTickAsync(stoppingToken) && !stoppingToken.IsCancellationRequested)
         {
-            Console.WriteLine(DateTime.Now.ToString("O"));
-            // relogin!
+            _myDependency.WriteMessage(DateTime.Now.ToString("O"));
+            // re-login!
         }
     }
 }
