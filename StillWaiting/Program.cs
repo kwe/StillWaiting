@@ -1,3 +1,5 @@
+using Polly;
+using Polly.Contrib.WaitAndRetry;
 using StillWaiting;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,6 +13,14 @@ builder.Services.AddSingleton<IMyDependency, MyDependency>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddHttpClient(PostsClient.ClientName,
+        client =>
+        {
+            client.BaseAddress = new Uri("https://jsonplaceholder.typicode.com/");
+        })
+    .AddTransientHttpErrorPolicy(policyBuilder =>
+        policyBuilder.WaitAndRetryAsync(Backoff.DecorrelatedJitterBackoffV2(TimeSpan.FromSeconds(1), 5)));
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -23,5 +33,6 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.MapGet("/", () => "Hello World!");
+app.MapGet("/health", () => "Healthy");
 
 app.Run();
