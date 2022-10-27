@@ -1,6 +1,6 @@
-namespace StillWaiting;
+namespace StillWaiting.Clients;
 
-public class PostsClient
+public class PostsClient:IPostsClient
 {
     public const string ClientName = "postsclient";
   
