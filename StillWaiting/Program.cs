@@ -35,7 +35,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.MapGet("/", () => "Hello World!");
-app.MapGet("/health", () => "Healthy");
+app.MapGet("/health", (IMyDependency myDependency) => ($"Healthy, token is {myDependency.GetToken()}"));
 app.MapGet("/posts", async (IPostsClient postsClient, IMyDependency myDependency) =>
 {
     var posts = await postsClient.GetPostsAsync();
