@@ -21,7 +21,7 @@ public class RepeatingService: BackgroundService
         {
             _myDependency.WriteMessage(DateTime.Now.ToString("O"));
             var posts = await _postsClient.GetPostsAsync();
-            _myDependency.SetToken(posts.First().Title);
+            if (posts != null) _myDependency.SetToken(posts.First().Title!);
             Console.WriteLine($"Called get Posts, token is {_myDependency.GetToken()}");
         }
     }

@@ -4,7 +4,13 @@ namespace StillWaiting;
 
 public class MyDependency: IMyDependency
 {
-    private Widget _widget;
+    // ReSharper disable once FieldCanBeMadeReadOnly.Local
+    private Widget? _widget;
+    
+    public MyDependency()
+    {
+        _widget = new Widget();
+    }
     public void WriteMessage(string message)
     {
         Console.WriteLine($"My dependency called {message}");
@@ -12,12 +18,11 @@ public class MyDependency: IMyDependency
 
     public void SetToken(string token)
     {
-        _widget = new Widget();
-        _widget.Token = token;
+        if (_widget != null) _widget.Token = token;
     }
 
     public string GetToken()
     {
-        return _widget.Token;
+        return _widget?.Token!;
     }
 }
