@@ -36,9 +36,10 @@ app.UseHttpsRedirection();
 
 app.MapGet("/", () => "Hello World!");
 app.MapGet("/health", () => "Healthy");
-app.MapGet("/posts", async (IPostsClient postsClient) =>
+app.MapGet("/posts", async (IPostsClient postsClient, IMyDependency myDependency) =>
 {
     var posts = await postsClient.GetPostsAsync();
+    Console.WriteLine($"In posts endpoint - {myDependency.GetToken()}");
     return posts is not null ? Results.Ok(posts) : Results.NotFound();
 });
 

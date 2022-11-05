@@ -20,7 +20,8 @@ public class RepeatingService: BackgroundService
         while (await _timer.WaitForNextTickAsync(stoppingToken) && !stoppingToken.IsCancellationRequested)
         {
             _myDependency.WriteMessage(DateTime.Now.ToString("O"));
-            await _postsClient.GetPostsAsync();
+            var posts = await _postsClient.GetPostsAsync();
+            _myDependency.SetToken(posts.First().Title);
             Console.WriteLine($"Called get Posts, token is {_myDependency.GetToken()}");
         }
     }
