@@ -12,14 +12,16 @@ public class RepeatingService: BackgroundService
     {
         _myDependency = myDependency;
         _postsClient = postsClient;
-        Console.WriteLine("RepeatingService constructor");
+        _myDependency.SetToken("hello world");
+        Console.WriteLine($"RepeatingService constructor, token: {_myDependency.GetToken()}");
     }
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         while (await _timer.WaitForNextTickAsync(stoppingToken) && !stoppingToken.IsCancellationRequested)
         {
             _myDependency.WriteMessage(DateTime.Now.ToString("O"));
-            var posts = _postsClient.GetPostsAsync();
+            await _postsClient.GetPostsAsync();
+            Console.WriteLine($"Called get Posts, token is {_myDependency.GetToken()}");
         }
     }
 }
